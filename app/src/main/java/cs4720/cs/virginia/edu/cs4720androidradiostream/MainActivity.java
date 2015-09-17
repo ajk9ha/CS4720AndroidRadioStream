@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
 import static com.google.android.gms.location.LocationServices.API;
@@ -19,15 +20,20 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private Button name;
     private EditText textField;
     private TextView helloText;
+    private GoogleApiClient mGoogleApiClient;
+    private LocationRequest mLocationRequest;
 
-
+@Override
+protected void onStart(){
+    super.onStart();
+    mGoogleApiClient.connect();
+}
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(this)
+         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
@@ -39,10 +45,23 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         name.setOnClickListener(new View.OnClickListener() {
                                     public void onClick(View v) {
                                         helloText.setText(textField.getText());
+                                        Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                                                mGoogleApiClient);
+                                        TextView mLatitudeText = (TextView) findViewById(R.id.mLatitudeText);
+                                        TextView mLongitudeText = (TextView) findViewById(R.id.mLongitudeText);
+
+                                        if (mLastLocation != null) {
+                                            mLatitudeText.setText(String.valueOf(mLastLocation.getLatitude()));
+                                            mLongitudeText.setText(String.valueOf(mLastLocation.getLongitude()));
+                                        }
+                                        else{
+                                            mLatitudeText.setText("Location Services unavailable");
+                                        }
                                     }
                                 }
         );
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -67,9 +86,21 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     }
 
     @Override
-    public void onConnected(Bundle bundle) {
+    public void onConnected(Bundle connectionHint) {
+        Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                mGoogleApiClient);
+        TextView mLatitudeText = (TextView) findViewById(R.id.mLatitudeText);
+        TextView mLongitudeText = (TextView) findViewById(R.id.mLongitudeText);
 
+        if (mLastLocation != null) {
+            mLatitudeText.setText(String.valueOf(mLastLocation.getLatitude()));
+            mLongitudeText.setText(String.valueOf(mLastLocation.getLongitude()));
+        }
+        else{
+            mLatitudeText.setText("Location Services unavailable");
+        }
     }
+
 
     @Override
     public void onConnectionSuspended(int i) {
@@ -78,6 +109,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-
+        TextView mLatitudeText = (TextView) findViewById(R.id.mLatitudeText);
+        mLatitudeText.setText("Connection to Google Play API is not available");
     }
 }
