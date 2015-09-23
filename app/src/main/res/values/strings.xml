@@ -5,4 +5,11 @@
     <string name="action_settings">Settings</string>
     <string name="Hello">Hello</string>
     <string name="world">world</string>
+    <string name="title_activity_splash_screen">SplashScreen</string>
+    <string name="title_activity_stream">StreamActivity</string>
+
+    <string name="hd_stream">HD Stream</string>
+    <string name="normal_stream">Normal Stream</string>
+    <string name="hd_stream_url">http://streams.wtju.net:8000/wtjx-opus-256.ogg</string>
+    <string name="normal_stream_url">http://streams.wtju.net:8000/wtjx-128.mp3</string>
 </resources>
