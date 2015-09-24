@@ -75,4 +75,14 @@
         android:layout_alignTop="@+id/mLongitudeText"
         android:layout_toEndOf="@+id/textView" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Click to go to Stream Activity"
+        android:id="@+id/GoToStream"
+        android:layout_above="@+id/textView2"
+        android:layout_toEndOf="@+id/textView3"
+        android:clickable="true"
+        android:onClick="startStreamActivity" />
+
 </RelativeLayout>

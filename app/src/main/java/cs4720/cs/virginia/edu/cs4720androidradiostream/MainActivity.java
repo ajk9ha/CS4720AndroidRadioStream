@@ -1,8 +1,10 @@
 package cs4720.cs.virginia.edu.cs4720androidradiostream;
 
+import android.content.Intent;
 import android.location.Location;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,10 +20,13 @@ import static com.google.android.gms.location.LocationServices.API;
 
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     private Button name;
+    private Button goToStream;
     private EditText textField;
     private TextView helloText;
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
+    private double mLongitude;
+    private double mLatitude;
 
 @Override
 protected void onStart(){
@@ -53,12 +58,12 @@ protected void onStart(){
                                         if (mLastLocation != null) {
                                             mLatitudeText.setText(String.valueOf(mLastLocation.getLatitude()));
                                             mLongitudeText.setText(String.valueOf(mLastLocation.getLongitude()));
-                                        }
-                                        else{
+                                        } else {
                                             mLatitudeText.setText("Location Services unavailable");
                                         }
                                     }
                                 }
+
         );
     }
 
@@ -94,7 +99,9 @@ protected void onStart(){
 
         if (mLastLocation != null) {
             mLatitudeText.setText(String.valueOf(mLastLocation.getLatitude()));
+            mLatitude = mLastLocation.getLatitude();
             mLongitudeText.setText(String.valueOf(mLastLocation.getLongitude()));
+            mLongitude = mLastLocation.getLongitude();
         }
         else{
             mLatitudeText.setText("Location Services unavailable");
@@ -111,5 +118,14 @@ protected void onStart(){
     public void onConnectionFailed(ConnectionResult connectionResult) {
         TextView mLatitudeText = (TextView) findViewById(R.id.mLatitudeText);
         mLatitudeText.setText("Connection to Google Play API is not available");
+    }
+
+    public void startStreamActivity(View view) {
+        Intent intent = new Intent(this, StreamActivity.class);
+        intent.putExtra("lastLong", mLongitude);
+        intent.putExtra("lastLat", mLatitude);
+
+        MainActivity.this.startActivity(intent);
+        MainActivity.this.finish();
     }
 }
