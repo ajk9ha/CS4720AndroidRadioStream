@@ -23,6 +23,7 @@
             android:label="@string/title_activity_splash_screen" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
@@ -37,6 +38,20 @@
             android:label="@string/title_activity_favorites"
             android:theme="@style/FullscreenTheme" >
         </activity>
+        <activity
+            android:name=".PlaylistActivity"
+            android:label="@string/title_activity_playlist" >
+        </activity>
+
+        <service
+            android:name=".OldRadioStreamService"
+            android:enabled="true"
+            android:exported="true" >
+        </service>
+        <service
+            android:name=".RadioStreamService"
+            android:exported="false" >
+        </service>
     </application>
 
 </manifest>

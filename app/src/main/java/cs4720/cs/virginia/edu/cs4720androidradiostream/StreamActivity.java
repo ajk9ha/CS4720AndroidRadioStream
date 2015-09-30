@@ -7,19 +7,22 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import java.io.IOException;
 
 public class StreamActivity extends AppCompatActivity {
 
     MediaPlayer mediaPlayer;
-    Button streamButton;
+    ToggleButton streamButton;
     protected boolean isPlaying = false;
 
     //GPS Coordinates of WXTJ Station
@@ -44,6 +47,7 @@ public class StreamActivity extends AppCompatActivity {
         Float distToStation = distanceArray[0];
 
         TextView stationDist = (TextView) findViewById(R.id.stationDist);
+
         /* 5600 meters is approximately the range of a low power FM transmitter */
         if(distToStation <= 5600) {
             stationDist.setText("You are within " + distToStation.toString() + " meters of the WXTJ station.  Try tuning in on 100.1FM");
@@ -69,7 +73,7 @@ public class StreamActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        addListenerOnButton();
+        startRadioStreamService();
     }
 
     @Override
@@ -94,27 +98,44 @@ public class StreamActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void addListenerOnButton() {
-        streamButton = (Button) findViewById(R.id.startStream);
+    public void startPlaylistActivity(View view) {
+        Intent intent = new Intent(this, PlaylistActivity.class);
 
-        streamButton.setOnClickListener(new View.OnClickListener() {
+        StreamActivity.this.startActivity(intent);
+    }
+
+    public void startRadioStreamService() {
+
+        streamButton = (ToggleButton) findViewById(R.id.startStream);
+
+        streamButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
-                isPlaying = !isPlaying;
-
-                if(isPlaying == true) {
-                    mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                        @Override
-                        public void onPrepared(MediaPlayer mp) {
-                            mp.start();
-                        }
-                    });
-                }
-
-                if(isPlaying == false) {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isPlaying) {
+                if(isPlaying) {
+                    Intent streamIntent = new Intent(buttonView.getContext(), OldRadioStreamService.class);
+                    streamIntent.setAction("cs4720.cs.virginia.edu.cs4720androidradiostream.action.PLAY_NORMAL");
+                    startService(streamIntent);
+                    Log.d("test", "Stream service Intent sent");
+                } else {
+                    Intent pauseIntent = new Intent(buttonView.getContext(), OldRadioStreamService.class);
+                    pauseIntent.setAction("cs4720.cs.virginia.edu.cs4720androidradiostream.action.PLAY_NORMAL");
                     mediaPlayer.pause();
                 }
             }
         });
+
+
+//        isPlaying = !isPlaying;
+//
+//        if(isPlaying == true) {
+//
+//            Intent streamIntent = new Intent(this, RadioStreamService.class);
+//            startService(streamIntent);
+//
+//        }
+//
+//        if(isPlaying == false) {
+////            mediaPlayer.pause();
+//        }
     }
 }
