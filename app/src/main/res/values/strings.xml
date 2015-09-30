@@ -12,4 +12,8 @@
     <string name="normal_stream">Normal Stream</string>
     <string name="hd_stream_url">http://streams.wtju.net:8000/wtjx-opus-256.ogg</string>
     <string name="normal_stream_url">http://streams.wtju.net:8000/wtjx-128.mp3</string>
+
+    <string name="title_activity_favorites">Favorites</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>

@@ -9,9 +9,8 @@
     <TextView android:text="Hello " android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/textView"
-        android:layout_above="@+id/textView3"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="100dp" />
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -64,8 +63,9 @@
         android:layout_height="wrap_content"
         android:text="New Text"
         android:id="@+id/mLongitudeText"
-        android:layout_centerVertical="true"
-        android:layout_alignEnd="@+id/button" />
+        android:layout_alignParentTop="true"
+        android:layout_alignEnd="@+id/button"
+        android:layout_marginTop="139dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -80,9 +80,46 @@
         android:layout_height="wrap_content"
         android:text="Click to go to Stream Activity"
         android:id="@+id/GoToStream"
-        android:layout_above="@+id/textView2"
-        android:layout_toEndOf="@+id/textView3"
         android:clickable="true"
-        android:onClick="startStreamActivity" />
+        android:onClick="startStreamActivity"
+        android:layout_below="@+id/textView2"
+        android:layout_alignEnd="@+id/mLongitudeText" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="View Favorites"
+        android:id="@+id/GoToFavorites"
+        android:layout_above="@+id/button"
+        android:layout_alignEnd="@+id/button"
+        android:onClick="startFavoritesActivity" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/Title"
+        android:hint="Title"
+        android:layout_above="@+id/addToFavorites"
+        android:layout_alignStart="@+id/textView3"
+        android:layout_alignEnd="@+id/addToFavorites" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/Artist"
+        android:hint="Artist"
+        android:layout_above="@+id/Title"
+        android:layout_alignLeft="@+id/textView3"
+        android:layout_toStartOf="@+id/mLatitudeText" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add to Favorites"
+        android:id="@+id/addToFavorites"
+        android:layout_alignBottom="@+id/GoToFavorites"
+        android:layout_alignStart="@+id/Artist" />
 
 </RelativeLayout>

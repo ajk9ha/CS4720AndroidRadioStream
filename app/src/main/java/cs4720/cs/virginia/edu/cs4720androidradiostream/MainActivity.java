@@ -1,6 +1,10 @@
 package cs4720.cs.virginia.edu.cs4720androidradiostream;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.CharArrayBuffer;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,6 +15,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
@@ -27,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private LocationRequest mLocationRequest;
     private double mLongitude;
     private double mLatitude;
+    Cursor c;
 
 @Override
 protected void onStart(){
@@ -47,9 +54,45 @@ protected void onStart(){
         textField = (EditText) findViewById(R.id.editText);
         helloText = (TextView) findViewById(R.id.textView2);
 
+         final SQLiteDatabase db = new DBHelper(this).getWritableDatabase();
+
+        ContentValues cv = new ContentValues();
+        cv.put("Title", "Buddy Holly");
+        cv.put("Artist", "Weezer");
+
+
+
+        Button atf = (Button) findViewById(R.id.addToFavorites);
+        atf.setOnClickListener(new View.OnClickListener() {
+                                   public void onClick(View v) {
+                                       EditText tf = (EditText) findViewById(R.id.Title);
+                                       String title =  tf.getText().toString();
+                                       EditText af = (EditText) findViewById(R.id.Artist);
+                                       String artist =  af.getText().toString();
+                                       ContentValues cv = new ContentValues();
+                                       cv.put("Title", title);
+                                       cv.put("Artist", artist);
+                                       long error = db.insert("favorites", null, cv);
+                                       CharSequence toasttext = title;
+                                       if(error>-1) {
+                                           tf.setText("");
+                                           af.setText("");
+
+                                            toasttext = title + " by " + artist + " has been added to your favorites!";
+                                       }
+                                       else{
+                                            toasttext = "An error has occurred, please try again.";
+                                       }
+                                           Toast toast = Toast.makeText(getApplicationContext(),toasttext, Toast.LENGTH_SHORT);
+                                       toast.show();
+                                   }
+
+                               }
+        );
+
         name.setOnClickListener(new View.OnClickListener() {
                                     public void onClick(View v) {
-                                        helloText.setText(textField.getText());
+                                        helloText.setText(textField.toString());
                                         Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                                                 mGoogleApiClient);
                                         TextView mLatitudeText = (TextView) findViewById(R.id.mLatitudeText);
@@ -119,7 +162,11 @@ protected void onStart(){
         TextView mLatitudeText = (TextView) findViewById(R.id.mLatitudeText);
         mLatitudeText.setText("Connection to Google Play API is not available");
     }
-
+public void startFavoritesActivity(View view){
+    Intent intent = new Intent(this,Favorites.class);
+    MainActivity.this.startActivity(intent);
+    MainActivity.this.finish();
+}
     public void startStreamActivity(View view) {
         Intent intent = new Intent(this, StreamActivity.class);
         intent.putExtra("lastLong", mLongitude);

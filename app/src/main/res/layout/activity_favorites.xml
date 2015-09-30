@@ -1,0 +1,23 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:background="#0099cc"
+    tools:context="cs4720.cs.virginia.edu.cs4720androidradiostream.Favorites">
+
+    <!-- The primary full-screen view. This can be replaced with whatever view
+         is needed to present your content, e.g. VideoView, SurfaceView,
+         TextureView, etc. -->
+
+    <!-- This FrameLayout insets its children based on system windows using
+         android:fitsSystemWindows. -->
+
+    <TextView
+        android:layout_width="281dp"
+        android:layout_height="281dp"
+        android:text="New Text"
+        android:id="@+id/textView4"
+        android:layout_gravity="center"
+        android:textIsSelectable="true"
+        android:maxLines = "500"
+        android:scrollbars = "vertical"
+        android:textSize="@dimen/abc_text_size_headline_material" />
+</FrameLayout>
