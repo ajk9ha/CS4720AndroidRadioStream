@@ -11,8 +11,8 @@
          android:fitsSystemWindows. -->
 
     <TextView
-        android:layout_width="281dp"
-        android:layout_height="281dp"
+        android:layout_width="311dp"
+        android:layout_height="511dp"
         android:text="New Text"
         android:id="@+id/textView4"
         android:layout_gravity="center"

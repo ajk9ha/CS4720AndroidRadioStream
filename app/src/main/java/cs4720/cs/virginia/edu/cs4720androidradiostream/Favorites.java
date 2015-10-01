@@ -5,6 +5,7 @@ import cs4720.cs.virginia.edu.cs4720androidradiostream.util.SystemUiHider;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
@@ -85,7 +86,14 @@ public class Favorites extends Activity {
         // operations to prevent the jarring behavior of controls going away
         // while interacting with the UI.
     }
+    @Override
+    public void onBackPressed()
+    {
+        super.onBackPressed();
+        startActivity(new Intent(Favorites.this, MainActivity.class));
+        finish();
 
+    }
 
 
 
