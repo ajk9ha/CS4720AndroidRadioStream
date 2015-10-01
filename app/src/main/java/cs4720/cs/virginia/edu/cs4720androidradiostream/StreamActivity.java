@@ -19,6 +19,8 @@ import android.widget.ToggleButton;
 
 import java.io.IOException;
 
+import javax.sql.StatementEvent;
+
 public class StreamActivity extends AppCompatActivity {
 
     MediaPlayer mediaPlayer;
@@ -82,7 +84,14 @@ public class StreamActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_stream, menu);
         return true;
     }
+    @Override
+    public void onBackPressed()
+    {
+        super.onBackPressed();
+        startActivity(new Intent(StreamActivity.this, MainActivity.class));
+        finish();
 
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
