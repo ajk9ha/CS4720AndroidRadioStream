@@ -50,9 +50,7 @@ protected void onStart(){
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
                 .build();
-        name = (Button) findViewById(R.id.button);
-        textField = (EditText) findViewById(R.id.editText);
-        helloText = (TextView) findViewById(R.id.textView2);
+
 
          final SQLiteDatabase db = new DBHelper(this).getWritableDatabase();
 
@@ -66,48 +64,29 @@ protected void onStart(){
         atf.setOnClickListener(new View.OnClickListener() {
                                    public void onClick(View v) {
                                        EditText tf = (EditText) findViewById(R.id.Title);
-                                       String title =  tf.getText().toString();
+                                       String title = tf.getText().toString();
                                        EditText af = (EditText) findViewById(R.id.Artist);
-                                       String artist =  af.getText().toString();
+                                       String artist = af.getText().toString();
                                        ContentValues cv = new ContentValues();
                                        cv.put("Title", title);
                                        cv.put("Artist", artist);
                                        long error = db.insert("favorites", null, cv);
                                        CharSequence toasttext = title;
-                                       if(error>-1) {
+                                       if (error > -1) {
                                            tf.setText("");
                                            af.setText("");
 
-                                            toasttext = title + " by " + artist + " has been added to your favorites!";
+                                           toasttext = title + " by " + artist + " has been added to your favorites!";
+                                       } else {
+                                           toasttext = "An error has occurred, please try again.";
                                        }
-                                       else{
-                                            toasttext = "An error has occurred, please try again.";
-                                       }
-                                           Toast toast = Toast.makeText(getApplicationContext(),toasttext, Toast.LENGTH_SHORT);
+                                       Toast toast = Toast.makeText(getApplicationContext(), toasttext, Toast.LENGTH_SHORT);
                                        toast.show();
                                    }
 
                                }
         );
 
-        name.setOnClickListener(new View.OnClickListener() {
-                                    public void onClick(View v) {
-                                        helloText.setText(textField.toString());
-                                        Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
-                                                mGoogleApiClient);
-                                        TextView mLatitudeText = (TextView) findViewById(R.id.mLatitudeText);
-                                        TextView mLongitudeText = (TextView) findViewById(R.id.mLongitudeText);
-
-                                        if (mLastLocation != null) {
-                                            mLatitudeText.setText(String.valueOf(mLastLocation.getLatitude()));
-                                            mLongitudeText.setText(String.valueOf(mLastLocation.getLongitude()));
-                                        } else {
-                                            mLatitudeText.setText("Location Services unavailable");
-                                        }
-                                    }
-                                }
-
-        );
     }
 
 
@@ -137,17 +116,14 @@ protected void onStart(){
     public void onConnected(Bundle connectionHint) {
         Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                 mGoogleApiClient);
-        TextView mLatitudeText = (TextView) findViewById(R.id.mLatitudeText);
-        TextView mLongitudeText = (TextView) findViewById(R.id.mLongitudeText);
+
 
         if (mLastLocation != null) {
-            mLatitudeText.setText(String.valueOf(mLastLocation.getLatitude()));
             mLatitude = mLastLocation.getLatitude();
-            mLongitudeText.setText(String.valueOf(mLastLocation.getLongitude()));
             mLongitude = mLastLocation.getLongitude();
         }
         else{
-            mLatitudeText.setText("Location Services unavailable");
+//            mLatitudeText.setText("Location Services unavailable");
         }
     }
 
@@ -159,14 +135,22 @@ protected void onStart(){
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-        TextView mLatitudeText = (TextView) findViewById(R.id.mLatitudeText);
-        mLatitudeText.setText("Connection to Google Play API is not available");
+//        TextView mLatitudeText = (TextView) findViewById(R.id.mLatitudeText);
+//        mLatitudeText.setText("Connection to Google Play API is not available");
     }
-public void startFavoritesActivity(View view){
-    Intent intent = new Intent(this,Favorites.class);
-    MainActivity.this.startActivity(intent);
-    MainActivity.this.finish();
-}
+
+    public void startFavoritesActivity(View view){
+        Intent intent = new Intent(this,Favorites.class);
+        MainActivity.this.startActivity(intent);
+        MainActivity.this.finish();
+    }
+
+    public void startPlaylistActivity(View view) {
+        Intent intent = new Intent(this, PlaylistActivity.class);
+
+        MainActivity.this.startActivity(intent);
+    }
+
     public void startStreamActivity(View view) {
         Intent intent = new Intent(this, StreamActivity.class);
         intent.putExtra("lastLong", mLongitude);

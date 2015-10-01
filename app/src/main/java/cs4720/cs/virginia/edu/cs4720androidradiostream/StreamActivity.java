@@ -1,7 +1,6 @@
 package cs4720.cs.virginia.edu.cs4720androidradiostream;
 
 import android.content.Intent;
-import android.content.res.Resources;
 import android.location.Location;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -11,15 +10,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import java.io.IOException;
-
-import javax.sql.StatementEvent;
 
 public class StreamActivity extends AppCompatActivity {
 
@@ -121,30 +116,17 @@ public class StreamActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isPlaying) {
                 if(isPlaying) {
-                    Intent streamIntent = new Intent(buttonView.getContext(), OldRadioStreamService.class);
+                    Intent streamIntent = new Intent(buttonView.getContext(), RadioStreamService.class);
                     streamIntent.setAction("cs4720.cs.virginia.edu.cs4720androidradiostream.action.PLAY_NORMAL");
                     startService(streamIntent);
                     Log.d("test", "Stream service Intent sent");
                 } else {
-                    Intent pauseIntent = new Intent(buttonView.getContext(), OldRadioStreamService.class);
-                    pauseIntent.setAction("cs4720.cs.virginia.edu.cs4720androidradiostream.action.PLAY_NORMAL");
-                    mediaPlayer.pause();
+                    Intent stopIntent = new Intent(buttonView.getContext(), RadioStreamService.class);
+                    stopIntent.setAction("cs4720.cs.virginia.edu.cs4720androidradiostream.action.STOP");
+                    stopService(stopIntent);
                 }
             }
         });
 
-
-//        isPlaying = !isPlaying;
-//
-//        if(isPlaying == true) {
-//
-//            Intent streamIntent = new Intent(this, RadioStreamService.class);
-//            startService(streamIntent);
-//
-//        }
-//
-//        if(isPlaying == false) {
-////            mediaPlayer.pause();
-//        }
     }
 }

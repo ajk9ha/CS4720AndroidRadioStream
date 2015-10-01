@@ -6,120 +6,80 @@
     android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity"
     android:id="@+id/R">
 
-    <TextView android:text="Hello " android:layout_width="wrap_content"
+    <Button
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/textView"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true" />
+        android:text="Stream Control"
+        android:id="@+id/GoToStream"
+        android:clickable="true"
+        android:onClick="startStreamActivity"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"/>
 
-    <EditText
-        android:layout_width="wrap_content"
+    <Button
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/editText"
-        android:layout_marginBottom="44dp"
-        android:inputType="text"
-        android:width="100dp"
-        android:layout_alignParentBottom="true"
-        android:layout_toEndOf="@+id/textView3" />
+        android:text="View Current Playlist"
+        android:onClick="startPlaylistActivity"
+        android:id="@+id/viewPlaylist"
+        android:layout_below="@+id/GoToStream"
+        android:layout_centerHorizontal="true" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Enter Name Here"
-        android:id="@+id/name_entry"
-        android:layout_alignBottom="@+id/editText"
-        android:layout_alignEnd="@+id/textView3" />
-
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="OK"
-        android:id="@+id/button"
-        android:layout_alignBottom="@+id/editText"
-        android:layout_alignParentEnd="true"
-        android:width="50dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="@string/world"
-        android:id="@+id/textView2"
-        android:layout_alignTop="@+id/textView"
-        android:layout_toEndOf="@+id/textView" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New Text"
-        android:id="@+id/mLatitudeText"
-        android:layout_alignTop="@+id/mLongitudeText"
-        android:layout_alignEnd="@+id/editText" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New Text"
-        android:id="@+id/mLongitudeText"
-        android:layout_alignParentTop="true"
-        android:layout_alignEnd="@+id/button"
-        android:layout_marginTop="139dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="You are currently at:"
-        android:id="@+id/textView3"
-        android:layout_alignTop="@+id/mLongitudeText"
-        android:layout_toEndOf="@+id/textView" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Click to go to Stream Activity"
-        android:id="@+id/GoToStream"
-        android:clickable="true"
-        android:onClick="startStreamActivity"
-        android:layout_below="@+id/textView2"
-        android:layout_alignEnd="@+id/mLongitudeText" />
-
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="View Favorites"
-        android:id="@+id/GoToFavorites"
-        android:layout_above="@+id/button"
-        android:layout_alignEnd="@+id/button"
-        android:onClick="startFavoritesActivity" />
+        android:text="Keep track of your favorite songs!"
+        android:id="@+id/favoritesTitle"
+        android:layout_below="@+id/viewPlaylist"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="200dp"/>
 
     <EditText
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/Title"
         android:hint="Title"
-        android:layout_above="@+id/addToFavorites"
-        android:layout_alignStart="@+id/textView3"
-        android:layout_alignEnd="@+id/addToFavorites" />
+        android:layout_alignStart="@+id/Artist"
+        android:layout_below="@+id/favoritesTitle" />
 
     <EditText
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/Artist"
         android:hint="Artist"
-        android:layout_above="@+id/Title"
-        android:layout_alignLeft="@+id/textView3"
-        android:layout_toStartOf="@+id/mLatitudeText" />
+        android:layout_below="@+id/Title"
+        android:layout_centerHorizontal="true" />
 
     <Button
         style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Add to Favorites"
         android:id="@+id/addToFavorites"
-        android:layout_alignBottom="@+id/GoToFavorites"
-        android:layout_alignStart="@+id/Artist" />
+        android:layout_below="@+id/Artist"
+
+        android:layout_alignParentStart="true" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="View Favorites"
+        android:id="@+id/GoToFavorites"
+        android:onClick="startFavoritesActivity"
+        android:layout_below="@+id/addToFavorites"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Medium Text"
+        android:id="@+id/textView2"
+        android:visibility="invisible"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="191dp" />
 
 </RelativeLayout>
