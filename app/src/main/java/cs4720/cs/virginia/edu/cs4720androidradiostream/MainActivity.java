@@ -118,6 +118,9 @@ protected void onStart(){
             public void onItemClick(AdapterView parent, View view, int position, long id) {
                 if (position == 0 ){
                     Intent intent = new Intent(here, StreamActivity.class);
+                    intent.putExtra("lastLong", mLongitude);
+                    intent.putExtra("lastLat", mLatitude);
+
                     MainActivity.this.startActivity(intent);
                     MainActivity.this.finish();
                 }
