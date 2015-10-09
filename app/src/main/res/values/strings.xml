@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">CS4720AndroidRadioStream</string>
 
@@ -18,4 +19,10 @@
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="playlist_url">http://www.wtju.net/player/?station=wtjx</string>
     <string name="title_activity_playlist">PlaylistActivity</string>
+
+    <string-array name="menu_array">
+            <item>Stream</item>
+            <item>Favorites</item>
+            <item>Home</item>
+    </string-array>
 </resources>

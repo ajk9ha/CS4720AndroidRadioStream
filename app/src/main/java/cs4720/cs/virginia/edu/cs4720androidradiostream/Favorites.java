@@ -11,11 +11,15 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.widget.DrawerLayout;
 import android.text.method.ScrollingMovementMethod;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.CursorAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 /**
@@ -25,6 +29,9 @@ import android.widget.TextView;
  * @see SystemUiHider
  */
 public class Favorites extends Activity {
+    private String[] ListItems;
+    private DrawerLayout mDrawerLayout;
+    private ListView mDrawerList;
     /**
      * Whether or not the system UI should be auto-hidden after
      * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
@@ -85,6 +92,31 @@ public class Favorites extends Activity {
         // Upon interacting with UI controls, delay any scheduled hide()
         // operations to prevent the jarring behavior of controls going away
         // while interacting with the UI.
+        ListItems = getResources().getStringArray(R.array.menu_array);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+
+        // Set the adapter for the list view
+        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1, ListItems));
+        final Activity here = this;
+        // Set the list's click listener
+        mDrawerList.setOnItemClickListener(new ListView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView parent, View view, int position, long id) {
+                if (position == 2 ){
+                    Intent intent = new Intent(here, MainActivity.class);
+                    Favorites.this.startActivity(intent);
+                    Favorites.this.finish();
+                }
+                if(position==0){
+                    Intent intent = new Intent(here, StreamActivity.class);
+                    Favorites.this.startActivity(intent);
+                    Favorites.this.finish();
+                }
+            }
+
+        });
     }
     @Override
     public void onBackPressed()

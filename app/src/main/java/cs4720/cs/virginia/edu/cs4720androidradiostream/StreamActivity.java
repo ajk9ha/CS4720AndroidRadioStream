@@ -1,23 +1,30 @@
 package cs4720.cs.virginia.edu.cs4720androidradiostream;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.location.Location;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import java.io.IOException;
 
 public class StreamActivity extends AppCompatActivity {
-
+    private String[] ListItems;
+    private DrawerLayout mDrawerLayout;
+    private ListView mDrawerList;
     MediaPlayer mediaPlayer;
     ToggleButton streamButton;
     protected boolean isPlaying = false;
@@ -71,6 +78,31 @@ public class StreamActivity extends AppCompatActivity {
         }
 
         startRadioStreamService();
+        ListItems = getResources().getStringArray(R.array.menu_array);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+
+        // Set the adapter for the list view
+        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1, ListItems));
+        final Activity here = this;
+        // Set the list's click listener
+        mDrawerList.setOnItemClickListener(new ListView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView parent, View view, int position, long id) {
+                if (position == 2) {
+                    Intent intent = new Intent(here, MainActivity.class);
+                    StreamActivity.this.startActivity(intent);
+                    StreamActivity.this.finish();
+                }
+                if (position == 1) {
+                    Intent intent = new Intent(here, Favorites.class);
+                    StreamActivity.this.startActivity(intent);
+                    StreamActivity.this.finish();
+                }
+            }
+
+        });
     }
 
     @Override

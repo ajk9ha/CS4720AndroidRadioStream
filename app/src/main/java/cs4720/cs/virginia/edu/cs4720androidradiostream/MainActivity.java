@@ -1,19 +1,24 @@
 package cs4720.cs.virginia.edu.cs4720androidradiostream;
 
+import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.CharArrayBuffer;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,8 +39,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private double mLongitude;
     private double mLatitude;
     Cursor c;
+    private String[] ListItems;
+    private DrawerLayout mDrawerLayout;
+    private ListView mDrawerList;
 
-@Override
+
+    @Override
 protected void onStart(){
     super.onStart();
     mGoogleApiClient.connect();
@@ -45,6 +54,14 @@ protected void onStart(){
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        ListItems = getResources().getStringArray(R.array.menu_array);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+
+        // Set the adapter for the list view
+        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1, ListItems));
          mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -84,8 +101,35 @@ protected void onStart(){
                                        toast.show();
                                    }
 
-                               }
-        );
+                               });
+        setContentView(R.layout.activity_main);
+
+        ListItems = getResources().getStringArray(R.array.menu_array);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+
+        // Set the adapter for the list view
+        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1, ListItems));
+        final Activity here = this;
+        // Set the list's click listener
+        mDrawerList.setOnItemClickListener(new ListView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView parent, View view, int position, long id) {
+                if (position == 0 ){
+                    Intent intent = new Intent(here, StreamActivity.class);
+                    MainActivity.this.startActivity(intent);
+                    MainActivity.this.finish();
+                }
+                if(position==1){
+                    Intent intent = new Intent(here, Favorites.class);
+                    MainActivity.this.startActivity(intent);
+                    MainActivity.this.finish();
+                }
+            }
+
+        });
+
 
     }
 
