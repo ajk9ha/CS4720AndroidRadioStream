@@ -11,7 +11,7 @@ import java.io.IOException;
 public class RadioStreamService extends Service implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener {
     private static final String ACTION_PLAY_NORMAL = "cs4720.cs.virginia.edu.cs4720androidradiostream.action.PLAY_NORMAL";
     private static final String ACTION_STOP = "cs4720.cs.virginia.edu.cs4720androidradiostream.action.STOP";
-    MediaPlayer mMediaPlayer = null;
+    private static MediaPlayer mMediaPlayer = null;
 
     public RadioStreamService() {
     }
@@ -24,19 +24,27 @@ public class RadioStreamService extends Service implements MediaPlayer.OnPrepare
 
     @Override
     public void onPrepared(MediaPlayer mediaPlayer) {
-        mediaPlayer.start();
+        if(!mediaPlayer.isPlaying()) {
+            mediaPlayer.start();
+        }
     }
 
     public int onStartCommand(Intent intent, int flags, int startId) {
 
+        if(mMediaPlayer == null) {
+            mMediaPlayer = new MediaPlayer();
+        } else {
+            mMediaPlayer.reset();
+        }
+
         if(intent.getAction().equals(ACTION_PLAY_NORMAL)) {
             String normal_url = getString(R.string.normal_stream_url);
+            String tju = "http://streams.wtju.net:8000/wtju-192.mp3";
 
-            mMediaPlayer = new MediaPlayer();
             mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
             try {
-                mMediaPlayer.setDataSource(normal_url);
+                mMediaPlayer.setDataSource(tju);
             } catch (IOException e){
                 e.printStackTrace();
             } catch (IllegalArgumentException e) {
@@ -66,8 +74,8 @@ public class RadioStreamService extends Service implements MediaPlayer.OnPrepare
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         mMediaPlayer.stop();
         mMediaPlayer.release();
+        mMediaPlayer = null;
     }
 }

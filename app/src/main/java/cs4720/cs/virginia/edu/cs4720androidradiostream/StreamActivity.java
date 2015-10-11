@@ -1,6 +1,8 @@
 package cs4720.cs.virginia.edu.cs4720androidradiostream;
 
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.media.AudioManager;
@@ -46,6 +48,15 @@ public class StreamActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stream);
 
+        isPlaying = isRadioServiceRunning(RadioStreamService.class);
+        if(isPlaying) {
+            streamButton = (ToggleButton) findViewById(R.id.startStream);
+            streamButton.toggle();
+
+            streamIndicator = (ImageView) findViewById(R.id.streamIndicator);
+            streamIndicator.setImageDrawable(getDrawable(R.drawable.wxtj_no_background));
+        }
+
         Intent intent = getIntent();
         lastLong = intent.getDoubleExtra("lastLong", 0);
         lastLat = intent.getDoubleExtra("lastLat", 0);
@@ -65,22 +76,10 @@ public class StreamActivity extends AppCompatActivity {
 
         String normal_url = getString(R.string.normal_stream_url);
 
-        mediaPlayer = new MediaPlayer();
-        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        try {
-            mediaPlayer.setDataSource(normal_url);
-        } catch (IOException e){
-            e.printStackTrace();
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        }
-        try {
-            mediaPlayer.prepareAsync();
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        }
 
+        // Handle MediaPlayerService Logic in startRadioStreamService method
         startRadioStreamService();
+
         ListItems = getResources().getStringArray(R.array.menu_array);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
@@ -119,7 +118,7 @@ public class StreamActivity extends AppCompatActivity {
     {
         super.onBackPressed();
         startActivity(new Intent(StreamActivity.this, MainActivity.class));
-        finish();
+        //finish();
 
     }
     @Override
@@ -151,7 +150,7 @@ public class StreamActivity extends AppCompatActivity {
         streamButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isPlaying) {
-                if(isPlaying) {
+                if (isPlaying) {
                     Intent streamIntent = new Intent(buttonView.getContext(), RadioStreamService.class);
                     streamIntent.setAction("cs4720.cs.virginia.edu.cs4720androidradiostream.action.PLAY_NORMAL");
                     startService(streamIntent);
@@ -171,5 +170,15 @@ public class StreamActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private boolean isRadioServiceRunning(Class<?> RadioStreamService) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (RadioStreamService.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 }
