@@ -14,41 +14,39 @@
     tools:context="cs4720.cs.virginia.edu.cs4720androidradiostream.StreamActivity">
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:id="@+id/stationDist"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
         android:layout_marginTop="77dp" />
+
+    <ImageView
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:id="@+id/streamIndicator"
+        android:src="@drawable/wxtj_greyscale_no_background"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
 
     <ToggleButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New ToggleButton"
         android:id="@+id/startStream"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="98dp"
-        android:layout_above="@+id/streamIndicator"/>
+        android:layout_below="@+id/stationDist"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="55dp" />
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/streamIndicator"
-        android:src="@drawable/wxtj_greyscale_no_background"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="50dp" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="View Current Playlist"
-        android:id="@+id/button2"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:onClick="startPlaylistActivity"/>
+        android:id="@+id/playlist"
+        android:onClick="startPlaylistActivity"
+        android:layout_below="@id/startStream"
+        android:layout_alignParentEnd="true" />
 
 
 </RelativeLayout>

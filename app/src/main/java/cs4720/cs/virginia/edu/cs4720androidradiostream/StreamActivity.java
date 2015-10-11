@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.location.Location;
 import android.media.AudioManager;
+import android.media.Image;
 import android.media.MediaPlayer;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +16,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -25,6 +27,7 @@ public class StreamActivity extends AppCompatActivity {
     private String[] ListItems;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
+    private ImageView streamIndicator;
     MediaPlayer mediaPlayer;
     ToggleButton streamButton;
     protected boolean isPlaying = false;
@@ -143,6 +146,7 @@ public class StreamActivity extends AppCompatActivity {
     public void startRadioStreamService() {
 
         streamButton = (ToggleButton) findViewById(R.id.startStream);
+        streamIndicator = (ImageView) findViewById(R.id.streamIndicator);
 
         streamButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -152,10 +156,17 @@ public class StreamActivity extends AppCompatActivity {
                     streamIntent.setAction("cs4720.cs.virginia.edu.cs4720androidradiostream.action.PLAY_NORMAL");
                     startService(streamIntent);
                     Log.d("test", "Stream service Intent sent");
+
+                    // Make image colored
+                    streamIndicator.setImageDrawable(getDrawable(R.drawable.wxtj_no_background));
                 } else {
                     Intent stopIntent = new Intent(buttonView.getContext(), RadioStreamService.class);
                     stopIntent.setAction("cs4720.cs.virginia.edu.cs4720androidradiostream.action.STOP");
                     stopService(stopIntent);
+
+                    // Set image back to greyscale
+                    streamIndicator.setImageDrawable(getDrawable(R.drawable.wxtj_greyscale_no_background));
+
                 }
             }
         });
