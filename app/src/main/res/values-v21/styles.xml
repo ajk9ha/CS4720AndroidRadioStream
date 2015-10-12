@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="WXTJTheme" parent="@android:style/Theme.Material.Light">
+
+        <item name="android:colorPrimary"> @color/wxtj_blue</item>
+        <item name="android:colorPrimaryDark"> @color/darker_wxtj_blue</item>
+        <item name="android:colorAccent">@color/wxtj_accent</item>
+
+    </style>
+
+    <style name="FullscreenTheme" parent="@android:style/Theme.Material.Light.DarkActionBar">
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowBackground">@null</item>
+        <item name="metaButtonBarStyle">@style/ButtonBar</item>
+        <item name="metaButtonBarButtonStyle">@style/ButtonBarButton</item>
+    </style>
+</resources>

@@ -14,6 +14,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnPrepare
     private static MediaPlayer mMediaPlayer = null;
 
     public RadioStreamService() {
+
     }
 
     @Override

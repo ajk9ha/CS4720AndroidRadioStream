@@ -20,6 +20,12 @@
     <string name="playlist_url">http://www.wtju.net/player/?station=wtjx</string>
     <string name="title_activity_playlist">PlaylistActivity</string>
 
+    <string name="turn_on_stream">Turn on Stream</string>
+    <string name="turn_off_stream">Turn off Stream</string>
+
+    <string name="drawer_open"></string>
+    <string name="drawer_close"></string>
+
     <string-array name="menu_array">
             <item></item>
             <item>Stream</item>

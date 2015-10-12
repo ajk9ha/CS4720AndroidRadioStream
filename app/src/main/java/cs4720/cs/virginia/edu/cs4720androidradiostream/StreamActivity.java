@@ -25,7 +25,7 @@ import android.widget.ToggleButton;
 
 import java.io.IOException;
 
-public class StreamActivity extends AppCompatActivity {
+public class StreamActivity extends Activity {
     private String[] ListItems;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
@@ -113,14 +113,14 @@ public class StreamActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_stream, menu);
         return true;
     }
+
     @Override
-    public void onBackPressed()
-    {
+    public void onBackPressed() {
         super.onBackPressed();
         startActivity(new Intent(StreamActivity.this, MainActivity.class));
         //finish();
-
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will

@@ -34,7 +34,7 @@ import com.google.android.gms.location.LocationServices;
 
 import static com.google.android.gms.location.LocationServices.API;
 
-public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class MainActivity extends Activity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     private Button name;
     private Button goToStream;
     private EditText textField;

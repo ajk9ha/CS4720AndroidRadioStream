@@ -1,5 +1,6 @@
 package cs4720.cs.virginia.edu.cs4720androidradiostream;
 
+import android.app.Activity;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,7 +19,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class PlaylistActivity extends AppCompatActivity {
+public class PlaylistActivity extends Activity {
 
     WebView playListView;
     final String playlistUrl = "http://www.wtju.net/?station=wtjx";

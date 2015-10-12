@@ -1,5 +1,8 @@
 <resources>
 
     <color name="black_overlay">#66000000</color>
+    <color name="wxtj_blue">#FF259ED2</color>
+    <color name="darker_wxtj_blue">#FF186C90</color>
+    <color name="wxtj_accent">#FFEFAF10</color>
 
 </resources>

@@ -10,19 +10,17 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@android:style/Theme.Holo" >
+        android:theme="@style/WXTJTheme" >
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
         <activity
             android:name=".SplashScreen"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -32,20 +30,17 @@
         <activity
             android:name=".StreamActivity"
             android:label="@string/title_activity_stream"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:launchMode="singleInstance"
             android:alwaysRetainTaskState="true">
         </activity>
         <activity
             android:name=".Favorites"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_activity_favorites"
-            android:theme="@style/FullscreenTheme" >
+            android:label="@string/title_activity_favorites">
         </activity>
         <activity
             android:name=".PlaylistActivity"
-            android:label="@string/title_activity_playlist"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            android:label="@string/title_activity_playlist">
         </activity>
 
         <service
