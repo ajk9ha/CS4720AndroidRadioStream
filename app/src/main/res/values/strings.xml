@@ -21,6 +21,7 @@
     <string name="title_activity_playlist">PlaylistActivity</string>
 
     <string-array name="menu_array">
+            <item></item>
             <item>Stream</item>
             <item>Favorites</item>
             <item>Home</item>
