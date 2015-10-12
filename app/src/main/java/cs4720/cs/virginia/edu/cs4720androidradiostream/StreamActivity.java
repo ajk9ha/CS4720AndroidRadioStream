@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.location.Location;
 import android.media.AudioManager;
 import android.media.Image;
@@ -21,6 +23,7 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import java.io.IOException;
@@ -33,6 +36,9 @@ public class StreamActivity extends Activity {
     MediaPlayer mediaPlayer;
     ToggleButton streamButton;
     protected boolean isPlaying = false;
+    private SensorManager mSensorManager;
+    private Sensor mSensor;
+    private ShakeDetector mShakeDetector;
 
     //GPS Coordinates of WXTJ Station
     private double wxtjLat = 38.042128;
@@ -108,6 +114,32 @@ public class StreamActivity extends Activity {
                 }
             }
 
+        });
+        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        mShakeDetector = new ShakeDetector();
+        mShakeDetector.setOnShakeListener(new ShakeDetector.OnShakeListener() {
+
+            @Override
+            public void onShake(int count) {
+                Context context = getApplicationContext();
+                CharSequence text = "";
+                int duration = Toast.LENGTH_LONG;
+                if (isRadioServiceRunning(RadioStreamService.class)) {
+                    text = "Stream has stopped";
+                    Intent stopIntent = new Intent(here, RadioStreamService.class);
+                    stopIntent.setAction("cs4720.cs.virginia.edu.cs4720androidradiostream.action.STOP");
+                    stopService(stopIntent);
+                } else {
+                    text = "Stream has started!";
+                    Intent streamIntent = new Intent(here, RadioStreamService.class);
+                    streamIntent.setAction("cs4720.cs.virginia.edu.cs4720androidradiostream.action.PLAY_NORMAL");
+                    startService(streamIntent);
+
+                }
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
+            }
         });
     }
 
