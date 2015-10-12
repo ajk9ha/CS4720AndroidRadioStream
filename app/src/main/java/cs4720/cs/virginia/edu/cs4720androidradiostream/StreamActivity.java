@@ -54,12 +54,11 @@ public class StreamActivity extends AppCompatActivity {
             streamButton.toggle();
 
             streamIndicator = (ImageView) findViewById(R.id.streamIndicator);
-            streamIndicator.setImageDrawable(getDrawable(R.drawable.wxtj_no_background));
+            //  streamIndicator.setImageDrawable(getDrawable(R.drawable.wxtj_no_background));
         }
 
         Intent intent = getIntent();
         lastLong = intent.getDoubleExtra("lastLong", 0);
-        lastLat = intent.getDoubleExtra("lastLat", 0);
 
         Location.distanceBetween(lastLat, lastLong, wxtjLat, wxtjLong, distanceArray);
         Float distToStation = distanceArray[0];
@@ -157,14 +156,14 @@ public class StreamActivity extends AppCompatActivity {
                     Log.d("test", "Stream service Intent sent");
 
                     // Make image colored
-                    streamIndicator.setImageDrawable(getDrawable(R.drawable.wxtj_no_background));
+                  //  streamIndicator.setImageDrawable(getDrawable(R.drawable.wxtj_no_background));
                 } else {
                     Intent stopIntent = new Intent(buttonView.getContext(), RadioStreamService.class);
                     stopIntent.setAction("cs4720.cs.virginia.edu.cs4720androidradiostream.action.STOP");
                     stopService(stopIntent);
 
                     // Set image back to greyscale
-                   streamIndicator.setImageDrawable(getDrawable(R.drawable.wxtj_greyscale_no_background));
+                  // streamIndicator.setImageDrawable(getDrawable(R.drawable.wxtj_greyscale_no_background));
 
                 }
             }

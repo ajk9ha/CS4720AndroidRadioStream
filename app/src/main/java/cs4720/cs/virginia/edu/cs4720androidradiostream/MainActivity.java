@@ -1,6 +1,7 @@
 package cs4720.cs.virginia.edu.cs4720androidradiostream;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -149,16 +150,23 @@ protected void onStart(){
             @Override
             public void onShake(int count) {
                 Context context = getApplicationContext();
-                CharSequence text = "shook";
+                CharSequence text = "";
                 int duration = Toast.LENGTH_LONG;
-
-                Toast toast = Toast.makeText(context, text, duration);
-                toast.show();
+                if(isRadioServiceRunning(RadioStreamService.class)) {
+                    text = "Stream has stopped";
                     Intent stopIntent = new Intent(here, RadioStreamService.class);
                     stopIntent.setAction("cs4720.cs.virginia.edu.cs4720androidradiostream.action.STOP");
                     stopService(stopIntent);
+                }
+                else{
+                    text = "Stream has started!";
+                    Intent streamIntent = new Intent(here, RadioStreamService.class);
+                    streamIntent.setAction("cs4720.cs.virginia.edu.cs4720androidradiostream.action.PLAY_NORMAL");
+                    startService(streamIntent);
 
-
+                }
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
             }
         });
 
@@ -236,6 +244,7 @@ protected void onStart(){
         MainActivity.this.finish();
     }
 
+
     @Override
     public void onPause(){
         mSensorManager.unregisterListener(mShakeDetector);
@@ -245,8 +254,16 @@ protected void onStart(){
     @Override
     public void onResume(){
         super.onResume();
-        mSensorManager.registerListener(mShakeDetector, mSensor,	SensorManager.SENSOR_DELAY_UI);
+        mSensorManager.registerListener(mShakeDetector, mSensor, SensorManager.SENSOR_DELAY_UI);
     }
-
+    public  boolean isRadioServiceRunning(Class<?> RadioStreamService) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (RadioStreamService.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 }
