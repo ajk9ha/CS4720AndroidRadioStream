@@ -126,7 +126,7 @@ protected void onStart(){
         mDrawerList.setOnItemClickListener(new ListView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView parent, View view, int position, long id) {
-                if (position == 0 ){
+                if (position == 1 ){
                     Intent intent = new Intent(here, StreamActivity.class);
                     intent.putExtra("lastLong", mLongitude);
                     intent.putExtra("lastLat", mLatitude);
@@ -134,8 +134,13 @@ protected void onStart(){
                     MainActivity.this.startActivity(intent);
                     MainActivity.this.finish();
                 }
-                if(position==1){
+                if(position==2){
                     Intent intent = new Intent(here, Favorites.class);
+                    MainActivity.this.startActivity(intent);
+                    MainActivity.this.finish();
+                }
+                if(position==4){
+                    Intent intent = new Intent(here, PlaylistActivity.class);
                     MainActivity.this.startActivity(intent);
                     MainActivity.this.finish();
                 }

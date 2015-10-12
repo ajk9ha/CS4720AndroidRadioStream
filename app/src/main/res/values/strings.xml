@@ -25,5 +25,6 @@
             <item>Stream</item>
             <item>Favorites</item>
             <item>Home</item>
+            <item>Playlist</item>
     </string-array>
 </resources>

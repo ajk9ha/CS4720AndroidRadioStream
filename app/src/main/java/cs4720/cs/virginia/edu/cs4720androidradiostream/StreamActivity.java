@@ -91,13 +91,18 @@ public class StreamActivity extends AppCompatActivity {
         mDrawerList.setOnItemClickListener(new ListView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView parent, View view, int position, long id) {
-                if (position == 2) {
+                if (position == 3) {
                     Intent intent = new Intent(here, MainActivity.class);
                     StreamActivity.this.startActivity(intent);
                     StreamActivity.this.finish();
                 }
-                if (position == 1) {
+                if (position == 2) {
                     Intent intent = new Intent(here, Favorites.class);
+                    StreamActivity.this.startActivity(intent);
+                    StreamActivity.this.finish();
+                }
+                if(position==4){
+                    Intent intent = new Intent(here, PlaylistActivity.class);
                     StreamActivity.this.startActivity(intent);
                     StreamActivity.this.finish();
                 }
@@ -156,14 +161,14 @@ public class StreamActivity extends AppCompatActivity {
                     Log.d("test", "Stream service Intent sent");
 
                     // Make image colored
-                  //  streamIndicator.setImageDrawable(getDrawable(R.drawable.wxtj_no_background));
+                    //  streamIndicator.setImageDrawable(getDrawable(R.drawable.wxtj_no_background));
                 } else {
                     Intent stopIntent = new Intent(buttonView.getContext(), RadioStreamService.class);
                     stopIntent.setAction("cs4720.cs.virginia.edu.cs4720androidradiostream.action.STOP");
                     stopService(stopIntent);
 
                     // Set image back to greyscale
-                  // streamIndicator.setImageDrawable(getDrawable(R.drawable.wxtj_greyscale_no_background));
+                    // streamIndicator.setImageDrawable(getDrawable(R.drawable.wxtj_greyscale_no_background));
 
                 }
             }

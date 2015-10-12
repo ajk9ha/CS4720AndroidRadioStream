@@ -116,13 +116,18 @@ public class Favorites extends Activity {
         mDrawerList.setOnItemClickListener(new ListView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView parent, View view, int position, long id) {
-                if (position == 2 ){
+                if (position == 3){
                     Intent intent = new Intent(here, MainActivity.class);
                     Favorites.this.startActivity(intent);
                     Favorites.this.finish();
                 }
-                if(position==0){
+                if(position==1){
                     Intent intent = new Intent(here, StreamActivity.class);
+                    Favorites.this.startActivity(intent);
+                    Favorites.this.finish();
+                }
+                if(position==4){
+                    Intent intent = new Intent(here, PlaylistActivity.class);
                     Favorites.this.startActivity(intent);
                     Favorites.this.finish();
                 }
