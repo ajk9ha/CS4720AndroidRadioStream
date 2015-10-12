@@ -9,6 +9,12 @@
 
     </style>
 
+    <style name="WXTJTheme.NoActionBar" parent="WXTJTheme">
+
+        <item name="android:windowNoTitle">true</item>
+
+    </style>
+
     <style name="FullscreenTheme" parent="@android:style/Theme.Material.Light.DarkActionBar">
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowBackground">@null</item>

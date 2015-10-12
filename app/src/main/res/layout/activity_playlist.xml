@@ -6,16 +6,7 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="cs4720.cs.virginia.edu.cs4720androidradiostream.PlaylistActivity"
     android:visibility="visible"
-    android:nestedScrollingEnabled="true"
-    android:id="@+id/">
-
-    <WebView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/playlistView"
-        android:visibility="visible"
-        android:layout_below="@+id/show_info"
-        android:layout_alignParentStart="true" />
+    android:nestedScrollingEnabled="true">
 
     <TextView
         android:layout_width="wrap_content"
@@ -25,13 +16,21 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
+    <WebView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/playlistView"
+        android:visibility="visible"
+        android:layout_below="@+id/show_info"
+        android:layout_alignParentStart="true" />
+
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/editText"
         android:hint="Title"
         android:layout_marginBottom="87dp"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/playlistView"
         android:layout_alignParentStart="true"
         android:layout_toStartOf="@+id/button" />
 
@@ -40,6 +39,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/editText2"
         android:hint="Artist"
+        android:layout_below="@+id/playlistView"
         android:layout_alignTop="@+id/editText"
         android:layout_alignEnd="@+id/button"
         android:layout_toEndOf="@+id/editText" />

@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">CS4720AndroidRadioStream</string>
+    <string name="app_name">WXTJ Student Radio</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="Hello">Hello</string>
     <string name="world">world</string>
     <string name="title_activity_splash_screen">SplashScreen</string>
-    <string name="title_activity_stream">StreamActivity</string>
+    <string name="title_activity_stream">Stream Control</string>
 
     <string name="hd_stream">HD Stream</string>
     <string name="normal_stream">Normal Stream</string>
     <string name="hd_stream_url">http://streams.wtju.net:8000/wtjx-opus-256.ogg</string>
     <string name="normal_stream_url">http://streams.wtju.net:8000/wtjx-128.mp3</string>
 
-    <string name="title_activity_favorites">Favorites</string>
+    <string name="title_activity_favorites">Favorites Tracks</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="playlist_url">http://www.wtju.net/player/?station=wtjx</string>
-    <string name="title_activity_playlist">PlaylistActivity</string>
+    <string name="title_activity_playlist">Now Playing</string>
 
     <string name="turn_on_stream">Turn on Stream</string>
     <string name="turn_off_stream">Turn off Stream</string>

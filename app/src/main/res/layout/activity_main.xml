@@ -76,7 +76,7 @@
             android:id="@+id/GoToFavorites"
             android:onClick="startFavoritesActivity"
             android:layout_below="@+id/addToFavorites"
-            android:layout_alignParentStart="true" />
+            android:layout_alignParentBottom="true" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -85,9 +85,7 @@
             android:text="Medium Text"
             android:id="@+id/textView2"
             android:visibility="invisible"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginBottom="191dp" />
+            android:layout_alignParentStart="true" />
 
     </RelativeLayout>
     <!-- The navigation drawer -->

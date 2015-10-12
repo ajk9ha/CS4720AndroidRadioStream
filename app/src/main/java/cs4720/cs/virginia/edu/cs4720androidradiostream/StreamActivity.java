@@ -54,7 +54,7 @@ public class StreamActivity extends Activity {
             streamButton.toggle();
 
             streamIndicator = (ImageView) findViewById(R.id.streamIndicator);
-            //  streamIndicator.setImageDrawable(getDrawable(R.drawable.wxtj_no_background));
+              streamIndicator.setImageDrawable(getDrawable(R.drawable.wxtj_no_background));
         }
 
         Intent intent = getIntent();
@@ -161,14 +161,14 @@ public class StreamActivity extends Activity {
                     Log.d("test", "Stream service Intent sent");
 
                     // Make image colored
-                    //  streamIndicator.setImageDrawable(getDrawable(R.drawable.wxtj_no_background));
+                      streamIndicator.setImageDrawable(getDrawable(R.drawable.wxtj_no_background));
                 } else {
                     Intent stopIntent = new Intent(buttonView.getContext(), RadioStreamService.class);
                     stopIntent.setAction("cs4720.cs.virginia.edu.cs4720androidradiostream.action.STOP");
                     stopService(stopIntent);
 
                     // Set image back to greyscale
-                    // streamIndicator.setImageDrawable(getDrawable(R.drawable.wxtj_greyscale_no_background));
+                     streamIndicator.setImageDrawable(getDrawable(R.drawable.wxtj_greyscale_no_background));
 
                 }
             }

@@ -13,6 +13,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.Location;
+import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -49,16 +50,19 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     private String[] ListItems;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
+    private ActionBarDrawerToggle mDrawerToggle;
+
     private SensorManager mSensorManager;
     private Sensor mSensor;
     private double maxValue = 0;
 
 
     @Override
-protected void onStart(){
-    super.onStart();
-    mGoogleApiClient.connect();
-}
+    protected void onStart(){
+        super.onStart();
+        mGoogleApiClient.connect();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -72,6 +76,28 @@ protected void onStart(){
         // Set the adapter for the list view
         mDrawerList.setAdapter(new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1, ListItems));
+
+        mDrawerToggle = new ActionBarDrawerToggle(
+                this,                  /* host Activity */
+                mDrawerLayout,         /* DrawerLayout object */
+                R.drawable.ic_drawer,  /* nav drawer icon to replace 'Up' caret */
+                R.string.drawer_open,  /* "open drawer" description */
+                R.string.drawer_close  /* "close drawer" description */
+        ) {
+
+            /** Called when a drawer has settled in a completely closed state. */
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
+//                getActionBar().setTitle(mTitle);
+            }
+
+            /** Called when a drawer has settled in a completely open state. */
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+//                getActionBar().setTitle(mDrawerTitle);
+            }
+        };
+
          mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -251,7 +277,7 @@ protected void onStart(){
 
 
     @Override
-    public void onPause(){
+    public void onPause() {
         mSensorManager.unregisterListener(mShakeDetector);
         super.onPause();
 
