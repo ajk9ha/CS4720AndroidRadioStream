@@ -2,10 +2,15 @@ package cs4720.cs.virginia.edu.cs4720androidradiostream;
 
 import android.app.Activity;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.database.CharArrayBuffer;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.location.Location;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -38,10 +43,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private LocationRequest mLocationRequest;
     private double mLongitude;
     private double mLatitude;
+    private ShakeDetector mShakeDetector;
     Cursor c;
     private String[] ListItems;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
+    private SensorManager mSensorManager;
+    private Sensor mSensor;
+    private double maxValue = 0;
 
 
     @Override
@@ -79,29 +88,29 @@ protected void onStart(){
 
         Button atf = (Button) findViewById(R.id.addToFavorites);
         atf.setOnClickListener(new View.OnClickListener() {
-                                   public void onClick(View v) {
-                                       EditText tf = (EditText) findViewById(R.id.Title);
-                                       String title = tf.getText().toString();
-                                       EditText af = (EditText) findViewById(R.id.Artist);
-                                       String artist = af.getText().toString();
-                                       ContentValues cv = new ContentValues();
-                                       cv.put("Title", title);
-                                       cv.put("Artist", artist);
-                                       long error = db.insert("favorites", null, cv);
-                                       CharSequence toasttext = title;
-                                       if (error > -1) {
-                                           tf.setText("");
-                                           af.setText("");
+            public void onClick(View v) {
+                EditText tf = (EditText) findViewById(R.id.Title);
+                String title = tf.getText().toString();
+                EditText af = (EditText) findViewById(R.id.Artist);
+                String artist = af.getText().toString();
+                ContentValues cv = new ContentValues();
+                cv.put("Title", title);
+                cv.put("Artist", artist);
+                long error = db.insert("favorites", null, cv);
+                CharSequence toasttext = title;
+                if (error > -1) {
+                    tf.setText("");
+                    af.setText("");
 
-                                           toasttext = title + " by " + artist + " has been added to your favorites!";
-                                       } else {
-                                           toasttext = "An error has occurred, please try again.";
-                                       }
-                                       Toast toast = Toast.makeText(getApplicationContext(), toasttext, Toast.LENGTH_SHORT);
-                                       toast.show();
-                                   }
+                    toasttext = title + " by " + artist + " has been added to your favorites!";
+                } else {
+                    toasttext = "An error has occurred, please try again.";
+                }
+                Toast toast = Toast.makeText(getApplicationContext(), toasttext, Toast.LENGTH_SHORT);
+                toast.show();
+            }
 
-                               });
+        });
         setContentView(R.layout.activity_main);
 
         ListItems = getResources().getStringArray(R.array.menu_array);
@@ -131,6 +140,26 @@ protected void onStart(){
                 }
             }
 
+        });
+        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        mShakeDetector = new ShakeDetector();
+        mShakeDetector.setOnShakeListener(new ShakeDetector.OnShakeListener() {
+
+            @Override
+            public void onShake(int count) {
+                Context context = getApplicationContext();
+                CharSequence text = "shook";
+                int duration = Toast.LENGTH_LONG;
+
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
+                    Intent stopIntent = new Intent(here, RadioStreamService.class);
+                    stopIntent.setAction("cs4720.cs.virginia.edu.cs4720androidradiostream.action.STOP");
+                    stopService(stopIntent);
+
+
+            }
         });
 
 
@@ -206,4 +235,18 @@ protected void onStart(){
         MainActivity.this.startActivity(intent);
         MainActivity.this.finish();
     }
+
+    @Override
+    public void onPause(){
+        mSensorManager.unregisterListener(mShakeDetector);
+        super.onPause();
+
+    }
+    @Override
+    public void onResume(){
+        super.onResume();
+        mSensorManager.registerListener(mShakeDetector, mSensor,	SensorManager.SENSOR_DELAY_UI);
+    }
+
+
 }

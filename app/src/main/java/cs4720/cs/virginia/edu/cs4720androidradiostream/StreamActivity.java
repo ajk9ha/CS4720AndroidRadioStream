@@ -164,7 +164,7 @@ public class StreamActivity extends AppCompatActivity {
                     stopService(stopIntent);
 
                     // Set image back to greyscale
-                    streamIndicator.setImageDrawable(getDrawable(R.drawable.wxtj_greyscale_no_background));
+                   streamIndicator.setImageDrawable(getDrawable(R.drawable.wxtj_greyscale_no_background));
 
                 }
             }
@@ -172,7 +172,7 @@ public class StreamActivity extends AppCompatActivity {
 
     }
 
-    private boolean isRadioServiceRunning(Class<?> RadioStreamService) {
+    public  boolean isRadioServiceRunning(Class<?> RadioStreamService) {
         ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
             if (RadioStreamService.getName().equals(service.service.getClassName())) {

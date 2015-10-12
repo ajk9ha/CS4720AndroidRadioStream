@@ -8,6 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,6 +23,7 @@ import android.widget.ArrayAdapter;
 import android.widget.CursorAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -59,6 +62,9 @@ public class Favorites extends Activity {
      * The instance of the {@link SystemUiHider} for this activity.
      */
     private SystemUiHider mSystemUiHider;
+    private SensorManager mSensorManager;
+    private Sensor mSensor;
+    private ShakeDetector mShakeDetector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,6 +123,27 @@ public class Favorites extends Activity {
             }
 
         });
+        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        mShakeDetector = new ShakeDetector();
+        mShakeDetector.setOnShakeListener(new ShakeDetector.OnShakeListener() {
+
+            @Override
+            public void onShake(int count) {
+                Context context = getApplicationContext();
+                CharSequence text = "shook";
+                int duration = Toast.LENGTH_LONG;
+
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
+                Intent stopIntent = new Intent(here, RadioStreamService.class);
+                stopIntent.setAction("cs4720.cs.virginia.edu.cs4720androidradiostream.action.STOP");
+                stopService(stopIntent);
+
+
+            }
+        });
+
     }
     @Override
     public void onBackPressed()
@@ -133,5 +160,16 @@ public class Favorites extends Activity {
      * Schedules a call to hide() in [delay] milliseconds, canceling any
      * previously scheduled calls.
      */
+    @Override
+    public void onPause(){
+        mSensorManager.unregisterListener(mShakeDetector);
+        super.onPause();
+
+    }
+    @Override
+    public void onResume(){
+        super.onResume();
+        mSensorManager.registerListener(mShakeDetector, mSensor, SensorManager.SENSOR_DELAY_UI);
+    }
 
 }
