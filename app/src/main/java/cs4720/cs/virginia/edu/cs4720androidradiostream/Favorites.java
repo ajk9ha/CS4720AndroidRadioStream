@@ -4,6 +4,7 @@ import cs4720.cs.virginia.edu.cs4720androidradiostream.util.SystemUiHider;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -13,17 +14,22 @@ import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.support.v4.widget.DrawerLayout;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.CursorAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -110,13 +116,18 @@ public class Favorites extends Activity {
         mDrawerList.setOnItemClickListener(new ListView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView parent, View view, int position, long id) {
-                if (position == 2 ){
+                if (position == 3){
                     Intent intent = new Intent(here, MainActivity.class);
                     Favorites.this.startActivity(intent);
                     Favorites.this.finish();
                 }
-                if(position==0){
+                if(position==1){
                     Intent intent = new Intent(here, StreamActivity.class);
+                    Favorites.this.startActivity(intent);
+                    Favorites.this.finish();
+                }
+                if(position==4){
+                    Intent intent = new Intent(here, PlaylistActivity.class);
                     Favorites.this.startActivity(intent);
                     Favorites.this.finish();
                 }
@@ -131,20 +142,30 @@ public class Favorites extends Activity {
             @Override
             public void onShake(int count) {
                 Context context = getApplicationContext();
-                CharSequence text = "shook";
+                CharSequence text = "";
                 int duration = Toast.LENGTH_LONG;
+                if(isRadioServiceRunning(RadioStreamService.class)) {
+                    text = "Stream has stopped";
+                    Intent stopIntent = new Intent(here, RadioStreamService.class);
+                    stopIntent.setAction("cs4720.cs.virginia.edu.cs4720androidradiostream.action.STOP");
+                    stopService(stopIntent);
+                }
+                else{
+                    text = "Stream has started!";
+                    Intent streamIntent = new Intent(here, RadioStreamService.class);
+                    streamIntent.setAction("cs4720.cs.virginia.edu.cs4720androidradiostream.action.PLAY_NORMAL");
+                    startService(streamIntent);
 
+                }
                 Toast toast = Toast.makeText(context, text, duration);
                 toast.show();
-                Intent stopIntent = new Intent(here, RadioStreamService.class);
-                stopIntent.setAction("cs4720.cs.virginia.edu.cs4720androidradiostream.action.STOP");
-                stopService(stopIntent);
-
-
             }
         });
 
     }
+
+
+
     @Override
     public void onBackPressed()
     {
@@ -170,6 +191,15 @@ public class Favorites extends Activity {
     public void onResume(){
         super.onResume();
         mSensorManager.registerListener(mShakeDetector, mSensor, SensorManager.SENSOR_DELAY_UI);
+    }
+    public  boolean isRadioServiceRunning(Class<?> RadioStreamService) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (RadioStreamService.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
