@@ -1,8 +1,13 @@
 package cs4720.cs.virginia.edu.cs4720androidradiostream;
 
+import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -30,6 +35,9 @@ public class PlaylistActivity extends AppCompatActivity {
     WebView playListView;
     final String playlistUrl = "http://www.wtju.net/?station=wtjx";
     String playlist;
+    private SensorManager mSensorManager;
+    private Sensor mSensor;
+    private ShakeDetector mShakeDetector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +75,33 @@ public class PlaylistActivity extends AppCompatActivity {
             }
 
         });
+        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        mShakeDetector = new ShakeDetector();
+        final Activity here = this;
+        mShakeDetector.setOnShakeListener(new ShakeDetector.OnShakeListener() {
+
+            @Override
+            public void onShake(int count) {
+                Context context = getApplicationContext();
+                CharSequence text = "";
+                int duration = Toast.LENGTH_LONG;
+                if (isRadioServiceRunning(RadioStreamService.class)) {
+                    text = "Stream has stopped";
+                    Intent stopIntent = new Intent(here, RadioStreamService.class);
+                    stopIntent.setAction("cs4720.cs.virginia.edu.cs4720androidradiostream.action.STOP");
+                    stopService(stopIntent);
+                } else {
+                    text = "Stream has started!";
+                    Intent streamIntent = new Intent(here, RadioStreamService.class);
+                    streamIntent.setAction("cs4720.cs.virginia.edu.cs4720androidradiostream.action.PLAY_NORMAL");
+                    startService(streamIntent);
+
+                }
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
+            }
+        });
 
     }
 
@@ -94,5 +129,14 @@ public class PlaylistActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+    public  boolean isRadioServiceRunning(Class<?> RadioStreamService) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (RadioStreamService.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 }
