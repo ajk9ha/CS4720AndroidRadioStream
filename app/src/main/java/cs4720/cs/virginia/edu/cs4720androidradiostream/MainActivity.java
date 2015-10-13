@@ -5,6 +5,7 @@ import android.app.ActivityManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.database.CharArrayBuffer;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -18,6 +19,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -69,6 +71,15 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Set up Google Client
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+
+
+        // Nav Drawer logic
         ListItems = getResources().getStringArray(R.array.menu_array);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
@@ -88,30 +99,61 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
             /** Called when a drawer has settled in a completely closed state. */
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
-//                getActionBar().setTitle(mTitle);
+                getActionBar().setTitle("WXTJ Student Radio");
             }
 
             /** Called when a drawer has settled in a completely open state. */
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-//                getActionBar().setTitle(mDrawerTitle);
+                getActionBar().setTitle("Select Destination");
             }
         };
 
-         mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
+        // Set the drawer toggle as the DrawerListener
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setHomeButtonEnabled(true);
+
+        final Activity here = this;
+
+        // Set the list's click listener
+        mDrawerList.setOnItemClickListener(new ListView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView parent, View view, int position, long id) {
+                if (position == 1) {
+                    Intent intent = new Intent(here, StreamActivity.class);
+                    intent.putExtra("lastLong", mLongitude);
+                    intent.putExtra("lastLat", mLatitude);
+
+                    MainActivity.this.startActivity(intent);
+                    MainActivity.this.finish();
+                }
+                if (position == 2) {
+                    Intent intent = new Intent(here, Favorites.class);
+                    MainActivity.this.startActivity(intent);
+                    MainActivity.this.finish();
+                }
+                if (position == 3) {
+                    mDrawerLayout.closeDrawer(Gravity.LEFT);
+
+                }
+                if (position == 4) {
+                    Intent intent = new Intent(here, PlaylistActivity.class);
+                    MainActivity.this.startActivity(intent);
+                    MainActivity.this.finish();
+                }
+            }
+
+        });
 
 
-         final SQLiteDatabase db = new DBHelper(this).getWritableDatabase();
+        // SQLite logic
+        final SQLiteDatabase db = new DBHelper(this).getWritableDatabase();
 
         ContentValues cv = new ContentValues();
         cv.put("Title", "Buddy Holly");
         cv.put("Artist", "Weezer");
-
-
 
         Button atf = (Button) findViewById(R.id.addToFavorites);
         atf.setOnClickListener(new View.OnClickListener() {
@@ -138,41 +180,8 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
             }
 
         });
-        setContentView(R.layout.activity_main);
 
-        ListItems = getResources().getStringArray(R.array.menu_array);
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerList = (ListView) findViewById(R.id.left_drawer);
-
-        // Set the adapter for the list view
-        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1, ListItems));
-        final Activity here = this;
-        // Set the list's click listener
-        mDrawerList.setOnItemClickListener(new ListView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView parent, View view, int position, long id) {
-                if (position == 1 ){
-                    Intent intent = new Intent(here, StreamActivity.class);
-                    intent.putExtra("lastLong", mLongitude);
-                    intent.putExtra("lastLat", mLatitude);
-
-                    MainActivity.this.startActivity(intent);
-                    MainActivity.this.finish();
-                }
-                if(position==2){
-                    Intent intent = new Intent(here, Favorites.class);
-                    MainActivity.this.startActivity(intent);
-                    MainActivity.this.finish();
-                }
-                if(position==4){
-                    Intent intent = new Intent(here, PlaylistActivity.class);
-                    MainActivity.this.startActivity(intent);
-                    MainActivity.this.finish();
-                }
-            }
-
-        });
+        // Shake sensor logic
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         mShakeDetector = new ShakeDetector();
@@ -201,9 +210,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
             }
         });
 
-
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -213,11 +220,30 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     }
 
     @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+
+        // Pass the event to ActionBarDrawerToggle, if it returns
+        // true, then it has handled the app icon touch event
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
@@ -231,7 +257,6 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     public void onConnected(Bundle connectionHint) {
         Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                 mGoogleApiClient);
-
 
         if (mLastLocation != null) {
             mLatitude = mLastLocation.getLatitude();
@@ -287,6 +312,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         super.onResume();
         mSensorManager.registerListener(mShakeDetector, mSensor, SensorManager.SENSOR_DELAY_UI);
     }
+
     public  boolean isRadioServiceRunning(Class<?> RadioStreamService) {
         ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
@@ -296,5 +322,6 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         }
         return false;
     }
+
 
 }

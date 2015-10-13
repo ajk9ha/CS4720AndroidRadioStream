@@ -4,16 +4,19 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.location.Location;
 import android.media.AudioManager;
 import android.media.Image;
 import android.media.MediaPlayer;
+import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,6 +35,8 @@ public class StreamActivity extends Activity {
     private String[] ListItems;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
+    private ActionBarDrawerToggle mDrawerToggle;
+
     private ImageView streamIndicator;
     MediaPlayer mediaPlayer;
     ToggleButton streamButton;
@@ -54,17 +59,20 @@ public class StreamActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stream);
 
+        // Check to see if Stream is already playing
         isPlaying = isRadioServiceRunning(RadioStreamService.class);
         if(isPlaying) {
             streamButton = (ToggleButton) findViewById(R.id.startStream);
             streamButton.toggle();
 
             streamIndicator = (ImageView) findViewById(R.id.streamIndicator);
-              streamIndicator.setImageDrawable(getDrawable(R.drawable.wxtj_no_background));
+            streamIndicator.setImageDrawable(getDrawable(R.drawable.wxtj_no_background));
         }
 
+        // Get Intent data
         Intent intent = getIntent();
         lastLong = intent.getDoubleExtra("lastLong", 0);
+        lastLat = intent.getDoubleExtra("lastLat", 0);
 
         Location.distanceBetween(lastLat, lastLong, wxtjLat, wxtjLong, distanceArray);
         Float distToStation = distanceArray[0];
@@ -85,9 +93,37 @@ public class StreamActivity extends Activity {
         // Handle MediaPlayerService Logic in startRadioStreamService method
         startRadioStreamService();
 
+        // Nav Drawer Logic
         ListItems = getResources().getStringArray(R.array.menu_array);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
+
+        mDrawerToggle = new ActionBarDrawerToggle(
+                this,                  /* host Activity */
+                mDrawerLayout,         /* DrawerLayout object */
+                R.drawable.ic_drawer,  /* nav drawer icon to replace 'Up' caret */
+                R.string.drawer_open,  /* "open drawer" description */
+                R.string.drawer_close  /* "close drawer" description */
+        ) {
+
+            /** Called when a drawer has settled in a completely closed state. */
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
+                getActionBar().setTitle(getString(R.string.title_activity_stream));
+            }
+
+            /** Called when a drawer has settled in a completely open state. */
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                getActionBar().setTitle("Select Destination");
+            }
+        };
+
+        // Set the drawer toggle as the DrawerListener
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setHomeButtonEnabled(true);
 
         // Set the adapter for the list view
         mDrawerList.setAdapter(new ArrayAdapter<String>(this,
@@ -97,17 +133,23 @@ public class StreamActivity extends Activity {
         mDrawerList.setOnItemClickListener(new ListView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView parent, View view, int position, long id) {
-                if (position == 3) {
-                    Intent intent = new Intent(here, MainActivity.class);
-                    StreamActivity.this.startActivity(intent);
-                    StreamActivity.this.finish();
+                if (position == 1) {
+                    mDrawerLayout.closeDrawer(Gravity.LEFT);
                 }
+
                 if (position == 2) {
                     Intent intent = new Intent(here, Favorites.class);
                     StreamActivity.this.startActivity(intent);
                     StreamActivity.this.finish();
                 }
-                if(position==4){
+
+                if (position == 3) {
+                    Intent intent = new Intent(here, MainActivity.class);
+                    StreamActivity.this.startActivity(intent);
+                    StreamActivity.this.finish();
+                }
+
+                if(position == 4){
                     Intent intent = new Intent(here, PlaylistActivity.class);
                     StreamActivity.this.startActivity(intent);
                     StreamActivity.this.finish();
@@ -115,6 +157,8 @@ public class StreamActivity extends Activity {
             }
 
         });
+
+        // Shake Sensor logic
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         mShakeDetector = new ShakeDetector();
@@ -158,11 +202,30 @@ public class StreamActivity extends Activity {
     }
 
     @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+
+        // Pass the event to ActionBarDrawerToggle, if it returns
+        // true, then it has handled the app icon touch event
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {

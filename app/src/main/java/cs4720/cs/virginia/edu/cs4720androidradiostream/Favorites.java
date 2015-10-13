@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.hardware.Sensor;
@@ -15,9 +16,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,6 +45,8 @@ public class Favorites extends Activity {
     private String[] ListItems;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
+    private ActionBarDrawerToggle mDrawerToggle;
+
     /**
      * Whether or not the system UI should be auto-hidden after
      * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
@@ -78,8 +84,8 @@ public class Favorites extends Activity {
 
         setContentView(R.layout.activity_favorites);
 
-
-       SQLiteDatabase db = new DBHelper(this).getWritableDatabase();
+        // SQLite Logic
+        SQLiteDatabase db = new DBHelper(this).getWritableDatabase();
         Cursor c = db.query(false, "favorites", null, null, null, null, null, null, null);
         String s = "";
         TextView textViewTitle = (TextView) this.findViewById(R.id.textView4);
@@ -100,6 +106,7 @@ public class Favorites extends Activity {
 
 
 
+        // Nav Drawer Logic
 
         // Upon interacting with UI controls, delay any scheduled hide()
         // operations to prevent the jarring behavior of controls going away
@@ -107,6 +114,33 @@ public class Favorites extends Activity {
         ListItems = getResources().getStringArray(R.array.menu_array);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
+
+        mDrawerToggle = new ActionBarDrawerToggle(
+                this,                  /* host Activity */
+                mDrawerLayout,         /* DrawerLayout object */
+                R.drawable.ic_drawer,  /* nav drawer icon to replace 'Up' caret */
+                R.string.drawer_open,  /* "open drawer" description */
+                R.string.drawer_close  /* "close drawer" description */
+        ) {
+
+            /** Called when a drawer has settled in a completely closed state. */
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
+                getActionBar().setTitle(getString(R.string.title_activity_favorites));
+            }
+
+            /** Called when a drawer has settled in a completely open state. */
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                getActionBar().setTitle("Select Destination");
+            }
+        };
+
+        // Set the drawer toggle as the DrawerListener
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setHomeButtonEnabled(true);
 
         // Set the adapter for the list view
         mDrawerList.setAdapter(new ArrayAdapter<String>(this,
@@ -116,17 +150,23 @@ public class Favorites extends Activity {
         mDrawerList.setOnItemClickListener(new ListView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView parent, View view, int position, long id) {
+                if (position == 1){
+                    Intent intent = new Intent(here, StreamActivity.class);
+                    Favorites.this.startActivity(intent);
+                    Favorites.this.finish();
+                }
+
+                if (position == 2) {
+                    mDrawerLayout.closeDrawer(Gravity.LEFT);
+                }
+
                 if (position == 3){
                     Intent intent = new Intent(here, MainActivity.class);
                     Favorites.this.startActivity(intent);
                     Favorites.this.finish();
                 }
-                if(position==1){
-                    Intent intent = new Intent(here, StreamActivity.class);
-                    Favorites.this.startActivity(intent);
-                    Favorites.this.finish();
-                }
-                if(position==4){
+
+                if (position == 4){
                     Intent intent = new Intent(here, PlaylistActivity.class);
                     Favorites.this.startActivity(intent);
                     Favorites.this.finish();
@@ -134,6 +174,8 @@ public class Favorites extends Activity {
             }
 
         });
+
+        // Shake sensor logic
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         mShakeDetector = new ShakeDetector();
@@ -164,7 +206,39 @@ public class Favorites extends Activity {
 
     }
 
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        mDrawerToggle.syncState();
+    }
 
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        // Pass the event to ActionBarDrawerToggle, if it returns
+        // true, then it has handled the app icon touch event
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     public void onBackPressed()
@@ -174,8 +248,6 @@ public class Favorites extends Activity {
         finish();
 
     }
-
-
 
     /**
      * Schedules a call to hide() in [delay] milliseconds, canceling any
