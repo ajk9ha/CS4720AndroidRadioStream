@@ -3,6 +3,11 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
     <!-- The main content view -->
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
@@ -27,12 +32,15 @@
         android:scrollbars = "vertical"
         android:textSize="@dimen/abc_text_size_headline_material" />
 </FrameLayout>
+
+    </ScrollView>
+
     <ListView android:id="@+id/left_drawer"
         android:layout_width="240dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:choiceMode="singleChoice"
-        android:divider="@android:color/transparent"
+        android:divider="@android:color/white"
         android:dividerHeight="0dp"
         android:background="#0099cc"/>
 </android.support.v4.widget.DrawerLayout>

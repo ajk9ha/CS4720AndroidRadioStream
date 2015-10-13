@@ -12,6 +12,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
+import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -35,17 +36,26 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
+
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  *
  * @see SystemUiHider
  */
-public class Favorites extends Activity {
+public class Favorites extends Activity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     private String[] ListItems;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
+    private GoogleApiClient mGoogleApiClient;
+
+    private double mLongitude;
+    private double mLatitude;
+
 
     /**
      * Whether or not the system UI should be auto-hidden after
@@ -84,6 +94,14 @@ public class Favorites extends Activity {
 
         setContentView(R.layout.activity_favorites);
 
+        // Set up Google Client
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+
+
         // SQLite Logic
         SQLiteDatabase db = new DBHelper(this).getWritableDatabase();
         Cursor c = db.query(false, "favorites", null, null, null, null, null, null, null);
@@ -91,7 +109,7 @@ public class Favorites extends Activity {
         TextView textViewTitle = (TextView) this.findViewById(R.id.textView4);
         textViewTitle.setMovementMethod(new ScrollingMovementMethod());
         if(c.getCount()==0){
-            s = "No Favorites yet! Add some from the Home screen!";
+            s = "No Favorites yet! Add some from the Playlist screen!";
         }
         else {
             c.moveToNext();
@@ -126,21 +144,21 @@ public class Favorites extends Activity {
             /** Called when a drawer has settled in a completely closed state. */
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
-                getActionBar().setTitle(getString(R.string.title_activity_favorites));
+//                getActionBar().setTitle(getString(R.string.title_activity_favorites));
             }
 
             /** Called when a drawer has settled in a completely open state. */
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                getActionBar().setTitle("Select Destination");
+//                getActionBar().setTitle("Select Destination");
             }
         };
 
         // Set the drawer toggle as the DrawerListener
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setHomeButtonEnabled(true);
+//        getActionBar().setDisplayHomeAsUpEnabled(true);
+//        getActionBar().setHomeButtonEnabled(true);
 
         // Set the adapter for the list view
         mDrawerList.setAdapter(new ArrayAdapter<String>(this,
@@ -152,6 +170,8 @@ public class Favorites extends Activity {
             public void onItemClick(AdapterView parent, View view, int position, long id) {
                 if (position == 1){
                     Intent intent = new Intent(here, StreamActivity.class);
+                    intent.putExtra("lastLong", mLongitude);
+                    intent.putExtra("lastLat", mLatitude);
                     Favorites.this.startActivity(intent);
                     Favorites.this.finish();
                 }
@@ -200,6 +220,7 @@ public class Favorites extends Activity {
 
                 }
                 Toast toast = Toast.makeText(context, text, duration);
+                toast.setGravity(Gravity.TOP, 0, 0);
                 toast.show();
             }
         });
@@ -274,4 +295,24 @@ public class Favorites extends Activity {
         return false;
     }
 
+    @Override
+    public void onConnected(Bundle bundle) {
+        Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                mGoogleApiClient);
+
+        if (mLastLocation != null) {
+            mLatitude = mLastLocation.getLatitude();
+            mLongitude = mLastLocation.getLongitude();
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+
+    }
 }

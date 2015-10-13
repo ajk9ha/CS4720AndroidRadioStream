@@ -45,7 +45,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnPrepare
             mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
             try {
-                mMediaPlayer.setDataSource(tju);
+                mMediaPlayer.setDataSource(normal_url);
             } catch (IOException e){
                 e.printStackTrace();
             } catch (IllegalArgumentException e) {

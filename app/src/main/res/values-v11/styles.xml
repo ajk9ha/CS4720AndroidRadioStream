@@ -1,8 +1,17 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="WXTJTheme" parent="Theme.AppCompat.Light">
-        <!-- Customize your theme here. -->
+    <style name="Theme.WXTJTheme" parent="Base.ThemeOverlay.AppCompat.ActionBar">
+        <item name="android:background"> @color/darker_wxtj_blue</item>
+        <item name="colorPrimary"> @color/wxtj_blue</item>
+        <item name="colorPrimaryDark"> @color/darkest_wxtj_blue</item>
+        <item name="colorAccent">@color/wxtj_accent</item>
+        <item name="logo">@drawable/wxtj_no_background</item>
+    </style>
+
+    <style name="Theme.WXTJTheme.NoActionBar" parent="Theme.WXTJTheme">
+        <item name="android:background">@color/darker_wxtj_blue</item>
+        <item name="android:windowNoTitle">true</item>
     </style>
 
     <style name="FullscreenTheme" parent="Theme.AppCompat.Light">

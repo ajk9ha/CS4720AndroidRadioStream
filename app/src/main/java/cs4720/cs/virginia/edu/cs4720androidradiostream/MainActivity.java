@@ -99,21 +99,21 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
             /** Called when a drawer has settled in a completely closed state. */
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
-                getActionBar().setTitle("WXTJ Student Radio");
+//                getActionBar().setTitle("WXTJ Student Radio");
             }
 
             /** Called when a drawer has settled in a completely open state. */
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                getActionBar().setTitle("Select Destination");
+//                getActionBar().setTitle("Select Destination");
             }
         };
 
         // Set the drawer toggle as the DrawerListener
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setHomeButtonEnabled(true);
+//        getActionBar().setDisplayHomeAsUpEnabled(true);
+//        getActionBar().setHomeButtonEnabled(true);
 
         final Activity here = this;
 
@@ -155,31 +155,31 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         cv.put("Title", "Buddy Holly");
         cv.put("Artist", "Weezer");
 
-        Button atf = (Button) findViewById(R.id.addToFavorites);
-        atf.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                EditText tf = (EditText) findViewById(R.id.Title);
-                String title = tf.getText().toString();
-                EditText af = (EditText) findViewById(R.id.Artist);
-                String artist = af.getText().toString();
-                ContentValues cv = new ContentValues();
-                cv.put("Title", title);
-                cv.put("Artist", artist);
-                long error = db.insert("favorites", null, cv);
-                CharSequence toasttext = title;
-                if (error > -1) {
-                    tf.setText("");
-                    af.setText("");
-
-                    toasttext = title + " by " + artist + " has been added to your favorites!";
-                } else {
-                    toasttext = "An error has occurred, please try again.";
-                }
-                Toast toast = Toast.makeText(getApplicationContext(), toasttext, Toast.LENGTH_SHORT);
-                toast.show();
-            }
-
-        });
+//       Button atf = (Button) findViewById(R.id.addToFavorites);
+//        atf.setOnClickListener(new View.OnClickListener() {
+//            public void onClick(View v) {
+//                EditText tf = (EditText) findViewById(R.id.Title);
+//                String title = tf.getText().toString();
+//                EditText af = (EditText) findViewById(R.id.Artist);
+//                String artist = af.getText().toString();
+//                ContentValues cv = new ContentValues();
+//                cv.put("Title", title);
+//                cv.put("Artist", artist);
+//                long error = db.insert("favorites", null, cv);
+//                CharSequence toasttext = title;
+//                if (error > -1) {
+//                    tf.setText("");
+//                    af.setText("");
+//
+//                    toasttext = title + " by " + artist + " has been added to your favorites!";
+//                } else {
+//                    toasttext = "An error has occurred, please try again.";
+//                }
+//                Toast toast = Toast.makeText(getApplicationContext(), toasttext, Toast.LENGTH_SHORT);
+//                toast.show();
+//            }
+//
+//        });
 
         // Shake sensor logic
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -206,6 +206,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 
                 }
                 Toast toast = Toast.makeText(context, text, duration);
+                toast.setGravity(Gravity.TOP, 0, 0);
                 toast.show();
             }
         });

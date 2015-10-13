@@ -21,9 +21,7 @@ public class FavoritesCursor extends CursorAdapter {
     }
 
     public void bindView(View view, Context context, Cursor cursor) {
-        TextView textViewTitle = (TextView) view.findViewById(R.id.textView2);
         String title = cursor.getString(0)+" By "+cursor.getString(1)+ " Off of "+cursor.getString(2)+"\n";
-        textViewTitle.setText(title);
 
     }
 

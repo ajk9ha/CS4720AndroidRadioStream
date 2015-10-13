@@ -29,6 +29,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
+
 import java.io.IOException;
 
 public class StreamActivity extends Activity {
@@ -66,7 +70,7 @@ public class StreamActivity extends Activity {
             streamButton.toggle();
 
             streamIndicator = (ImageView) findViewById(R.id.streamIndicator);
-            streamIndicator.setImageDrawable(getDrawable(R.drawable.wxtj_no_background));
+            streamIndicator.setImageResource(R.drawable.wxtj_no_background);
         }
 
         // Get Intent data
@@ -109,21 +113,21 @@ public class StreamActivity extends Activity {
             /** Called when a drawer has settled in a completely closed state. */
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
-                getActionBar().setTitle(getString(R.string.title_activity_stream));
+//                getActionBar().setTitle(getString(R.string.title_activity_stream));
             }
 
             /** Called when a drawer has settled in a completely open state. */
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                getActionBar().setTitle("Select Destination");
+//                getActionBar().setTitle("Select Destination");
             }
         };
 
         // Set the drawer toggle as the DrawerListener
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setHomeButtonEnabled(true);
+//        getActionBar().setDisplayHomeAsUpEnabled(true);
+//        getActionBar().setHomeButtonEnabled(true);
 
         // Set the adapter for the list view
         mDrawerList.setAdapter(new ArrayAdapter<String>(this,
@@ -158,6 +162,9 @@ public class StreamActivity extends Activity {
 
         });
 
+        streamButton = (ToggleButton) findViewById(R.id.startStream);
+        streamIndicator = (ImageView) findViewById(R.id.streamIndicator);
+
         // Shake Sensor logic
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -170,18 +177,25 @@ public class StreamActivity extends Activity {
                 CharSequence text = "";
                 int duration = Toast.LENGTH_LONG;
                 if (isRadioServiceRunning(RadioStreamService.class)) {
+                    streamIndicator.setImageResource(R.drawable.wxtj_greyscale_no_background);
+                    streamButton.toggle();
+
                     text = "Stream has stopped";
                     Intent stopIntent = new Intent(here, RadioStreamService.class);
                     stopIntent.setAction("cs4720.cs.virginia.edu.cs4720androidradiostream.action.STOP");
                     stopService(stopIntent);
                 } else {
-                    text = "Stream has started!";
+                    streamIndicator.setImageResource(R.drawable.wxtj_no_background);
+                    streamButton.toggle();
+
+                    text = "Stream is loading...";
                     Intent streamIntent = new Intent(here, RadioStreamService.class);
                     streamIntent.setAction("cs4720.cs.virginia.edu.cs4720androidradiostream.action.PLAY_NORMAL");
                     startService(streamIntent);
 
                 }
                 Toast toast = Toast.makeText(context, text, duration);
+                toast.setGravity(Gravity.TOP, 0, 0);
                 toast.show();
             }
         });
@@ -256,14 +270,14 @@ public class StreamActivity extends Activity {
                     Log.d("test", "Stream service Intent sent");
 
                     // Make image colored
-                      streamIndicator.setImageDrawable(getDrawable(R.drawable.wxtj_no_background));
+                      streamIndicator.setImageResource(R.drawable.wxtj_no_background);
                 } else {
                     Intent stopIntent = new Intent(buttonView.getContext(), RadioStreamService.class);
                     stopIntent.setAction("cs4720.cs.virginia.edu.cs4720androidradiostream.action.STOP");
                     stopService(stopIntent);
 
                     // Set image back to greyscale
-                     streamIndicator.setImageDrawable(getDrawable(R.drawable.wxtj_greyscale_no_background));
+                     streamIndicator.setImageResource(R.drawable.wxtj_greyscale_no_background);
 
                 }
             }
@@ -280,4 +294,18 @@ public class StreamActivity extends Activity {
         }
         return false;
     }
+
+
+    @Override
+    public void onPause() {
+        mSensorManager.unregisterListener(mShakeDetector);
+        super.onPause();
+
+    }
+    @Override
+    public void onResume(){
+        super.onResume();
+        mSensorManager.registerListener(mShakeDetector, mSensor, SensorManager.SENSOR_DELAY_UI);
+    }
+
 }

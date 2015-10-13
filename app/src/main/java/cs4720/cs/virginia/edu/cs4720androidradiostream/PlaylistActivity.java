@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.app.Activity;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
@@ -28,6 +29,10 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
@@ -38,11 +43,16 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class PlaylistActivity extends Activity {
+public class PlaylistActivity extends Activity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     private String[] ListItems;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
+    private GoogleApiClient mGoogleApiClient;
+
+    private double mLongitude;
+    private double mLatitude;
+
 
     WebView playListView;
     final String playlistUrl = "http://www.wtju.net/?station=wtjx";
@@ -55,6 +65,13 @@ public class PlaylistActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_playlist);
+
+        // Set up Google Client
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
 
         // Retrieve and update playlist view in AsyncTask
         new HTMLScrapingTask(this).execute();
@@ -113,6 +130,7 @@ public class PlaylistActivity extends Activity {
 
                 }
                 Toast toast = Toast.makeText(context, text, duration);
+                toast.setGravity(Gravity.TOP, 0, 0);
                 toast.show();
             }
         });
@@ -133,21 +151,21 @@ public class PlaylistActivity extends Activity {
             /** Called when a drawer has settled in a completely closed state. */
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
-                getActionBar().setTitle(getString(R.string.title_activity_playlist));
+//                getActionBar().setTitle(getString(R.string.title_activity_playlist));
             }
 
             /** Called when a drawer has settled in a completely open state. */
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                getActionBar().setTitle("Select Destination");
+//                getActionBar().setTitle("Select Destination");
             }
         };
 
         // Set the drawer toggle as the DrawerListener
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setHomeButtonEnabled(true);
+//        getActionBar().setDisplayHomeAsUpEnabled(true);
+//        getActionBar().setHomeButtonEnabled(true);
 
         // Set the adapter for the list view
         mDrawerList.setAdapter(new ArrayAdapter<String>(this,
@@ -159,6 +177,8 @@ public class PlaylistActivity extends Activity {
             public void onItemClick(AdapterView parent, View view, int position, long id) {
                 if (position == 1){
                     Intent intent = new Intent(here, StreamActivity.class);
+                    intent.putExtra("lastLong", mLongitude);
+                    intent.putExtra("lastLat", mLatitude);
                     PlaylistActivity.this.startActivity(intent);
                     PlaylistActivity.this.finish();
                 }
@@ -236,5 +256,39 @@ public class PlaylistActivity extends Activity {
             }
         }
         return false;
+    }
+
+
+    @Override
+    public void onPause() {
+        mSensorManager.unregisterListener(mShakeDetector);
+        super.onPause();
+
+    }
+    @Override
+    public void onResume(){
+        super.onResume();
+        mSensorManager.registerListener(mShakeDetector, mSensor, SensorManager.SENSOR_DELAY_UI);
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                mGoogleApiClient);
+
+        if (mLastLocation != null) {
+            mLatitude = mLastLocation.getLatitude();
+            mLongitude = mLastLocation.getLongitude();
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+
     }
 }

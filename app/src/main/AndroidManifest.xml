@@ -8,9 +8,10 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/wxtj_no_background"
         android:label="@string/app_name"
-        android:theme="@style/WXTJTheme" >
+        android:theme="@style/Theme.WXTJTheme"
+        android:logo="@drawable/wxtj_no_background">
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name">
@@ -21,7 +22,7 @@
         <activity
             android:name=".SplashScreen"
             android:label="@string/app_name"
-            android:theme="@style/WXTJTheme.NoActionBar">
+            android:theme="@style/Theme.WXTJTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
